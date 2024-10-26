@@ -3,16 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <title>password</title>
-    </head>
-    <body>
         <script type="text/javascript">
-            var pw;
-            pw = prompt("パスワードを入れて下さい。","");
-            if (pw =='testpass'){
-                location.href = "2.1class.html";
-            } else {
-            alert("パスワードが違います！");
+            function password() {
+                var pw;
+                pw = prompt("パスワードを入れて下さい。","");
+                if (pw =='testpass'){
+                    location.href = "2.1class.html";
+                } else {
+                alert("パスワードが違います！");
+                }
             }
         </script>
+    </head>
+    <body>
+        <button onclick="password();">押してください</button>
     </body>
 </html>
