@@ -6,8 +6,8 @@
   </head>
   <body>
     <script>
-      location.href = './2.1 class/pass.html'
+      location.href = 'pass.html'
     </script>
-    <p>redirect password...<a>if don't redirect,click here</a></p>
+    <p>redirect password...<a href="pass.html">if don't redirect,click here</a></p>
   </body>
 </html>
