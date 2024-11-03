@@ -1,7 +1,5 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <title>redirect</title>
     <meta charset="UTF-8">
     <script>
       location.href = 'Pass.html'
