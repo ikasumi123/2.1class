@@ -52,3 +52,9 @@ html {
 .right {
   text-align: right;
 }
+.fin {
+  background-color: darkgrey;
+}
+.black {
+  color: black;
+}
