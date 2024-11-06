@@ -9,3 +9,8 @@ function password() {
         }
     }
 }
+fetch('https://api.ipify.org?format=json')
+.then(response => response.json()) // APIのレスポンスをJSONとして解析
+.then(data => { // 解析されたデータを受け取る
+  console.log("Your IP address is: " + data.ip); // IPアドレスをコンソールに表示
+});
