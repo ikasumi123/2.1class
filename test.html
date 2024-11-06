@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LINE NotifyでIPアドレス通知</title>
+</head>
+<body>
+  <h1>IPアドレスをLINE Notifyで送信</h1>
+  <p>このページにアクセスすると、IPアドレスがLINEに送信されます。</p>
+  <button id="sendIpButton">IPアドレスをLINEに送信</button>
+
+  <script>
+    // LINE Notifyのアクセストークン（LINE Notifyで発行したトークンに置き換えてください）
+    const lineNotifyToken = 'WHTgPtRDZ1Clspqi4N9M76CACHXavu0FELTBonthN85';  // ここに自分のアクセストークンを入力
+
+    // IPアドレスを取得するためのipify APIを呼び出す
+    function getIpAddress() {
+      return fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => data.ip)  // IPアドレスを取得
+        .catch(error => {
+          console.error('IPアドレスの取得に失敗しました:', error);
+          return null;
+        });
+    }
+
+    // LINE Notifyを使って通知を送信
+    function sendLineNotify(message) {
+      fetch('https://notify-api.line.me/api/notify', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${lineNotifyToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          'message': message  // メッセージを送信
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 200) {
+          alert('通知が送信されました！');
+        } else {
+          alert('通知の送信に失敗しました。');
+        }
+      })
+      .catch(error => {
+        console.error('LINE Notifyへの通知送信に失敗しました:', error);
+        alert('LINE Notifyへの通知送信に失敗しました。');
+      });
+    }
+
+    // ボタンがクリックされたときの処理
+    document.getElementById('sendIpButton').addEventListener('click', function() {
+      getIpAddress()
+        .then(ip => {
+          if (ip) {
+            const message = `アクセス元のIPアドレスは: ${ip}`;
+            sendLineNotify(message);
+          } else {
+            alert('IPアドレスを取得できませんでした。');
+          }
+        });
+    });
+  </script>
+</body>
+</html>
