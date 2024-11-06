@@ -2,67 +2,42 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LINE NotifyでIPアドレス通知</title>
+  <title>IPアドレス取得</title>
 </head>
 <body>
-  <h1>IPアドレスをLINE Notifyで送信</h1>
-  <p>このページにアクセスすると、IPアドレスがLINEに送信されます。</p>
-  <button id="sendIpButton">IPアドレスをLINEに送信</button>
+  <h1>IPアドレス取得＆LINE Notify送信</h1>
+  <button id="get-ip-btn">IPアドレスを取得して送信</button>
 
   <script>
-    // LINE Notifyのアクセストークン（LINE Notifyで発行したトークンに置き換えてください）
-    const lineNotifyToken = 'WHTgPtRDZ1Clspqi4N9M76CACHXavu0FELTBonthN85';  // ここに自分のアクセストークンを入力
+    async function getIpAddress() {
+      try {
+        // ipify APIでクライアントIPアドレスを取得
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        const ipAddress = data.ip;
+        console.log('取得したIPアドレス:', ipAddress);
 
-    // IPアドレスを取得するためのipify APIを呼び出す
-    function getIpAddress() {
-      return fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => data.ip)  // IPアドレスを取得
-        .catch(error => {
-          console.error('IPアドレスの取得に失敗しました:', error);
-          return null;
+        // サーバーにIPアドレスを送信
+        const serverResponse = await fetch('https://your-backend-url.com/send-ip', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ip: ipAddress }),
         });
-    }
 
-    // LINE Notifyを使って通知を送信
-    function sendLineNotify(message) {
-      fetch('https://notify-api.line.me/api/notify', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${lineNotifyToken}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          'message': message  // メッセージを送信
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 200) {
-          alert('通知が送信されました！');
-        } else {
-          alert('通知の送信に失敗しました。');
+        if (!serverResponse.ok) {
+          throw new Error('IPアドレスの送信に失敗しました');
         }
-      })
-      .catch(error => {
-        console.error('LINE Notifyへの通知送信に失敗しました:', error);
-        alert('LINE Notifyへの通知送信に失敗しました。');
-      });
+
+        alert('IPアドレスが送信されました');
+      } catch (error) {
+        console.error('エラー:', error);
+        alert('IPアドレスの取得または送信に失敗しました');
+      }
     }
 
-    // ボタンがクリックされたときの処理
-    document.getElementById('sendIpButton').addEventListener('click', function() {
-      getIpAddress()
-        .then(ip => {
-          if (ip) {
-            const message = `アクセス元のIPアドレスは: ${ip}`;
-            sendLineNotify(message);
-          } else {
-            alert('IPアドレスを取得できませんでした。');
-          }
-        });
-    });
+    document.getElementById('get-ip-btn').addEventListener('click', getIpAddress);
   </script>
 </body>
 </html>
