@@ -1,0 +1,24 @@
+name: IP Address Notifier
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 毎時0分に実行（1時間ごとに実行）
+
+jobs:
+  notify_ip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get external IP address and send to LINE Notify
+        run: |
+          # 外部IPアドレスを取得
+          IP_ADDRESS=$(curl -s https://api.ipify.org)
+          
+          # LINE Notifyへメッセージを送信
+          curl -X POST "https://notify-api.line.me/api/notify" \
+          -H "Authorization: Bearer ${{ secrets.LINE_NOTIFY_TOKEN }}" \
+          -d "message=Current IP address: $IP_ADDRESS"
+        env:
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
