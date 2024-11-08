@@ -1,6 +1,6 @@
 <?php
 // LINE Notifyのアクセストークンを設定
-$access_token = 'YOUR_LINE_NOTIFY_ACCESS_TOKEN';  // 自分のアクセストークンに置き換えてください
+$access_token = 'kfwhwCQoxR52k2ZZUzQUq8cJq5LTDDuZyVVgBm5sRzl';  // 自分のアクセストークンに置き換えてください
 
 // POSTデータを受け取る
 $data = json_decode(file_get_contents('php://input'), true);
