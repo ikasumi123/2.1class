@@ -3,34 +3,32 @@ import requests
 
 app = Flask(__name__)
 
-# Line Notifyのアクセストークン
-LINE_NOTIFY_TOKEN = 'YOUR_LINE_NOTIFY_TOKEN'
+# LINE Notifyのアクセストークン（ここに自分のトークンを入れる）
+LINE_NOTIFY_TOKEN = 'YOUR_LINE_Xh1t6DLV6zEkFkpt5awibd9YPURzW2N8Ri7nUNumVET'
 
+# LINE Notify APIにメッセージを送信する関数
 def send_line_notify(message):
-    """
-    Line Notifyを使用して通知を送信する関数
-    """
-    headers = {
-        'Authorization': f'Bearer {LINE_NOTIFY_TOKEN}',
-    }
-    payload = {
-        'message': message,
-    }
-    response = requests.post('https://notify-api.line.me/api/notify', headers=headers, data=payload)
-    return response
+    url = 'https://notify-api.line.me/api/notify'
+    headers = {'Authorization': f'Bearer {LINE_NOTIFY_TOKEN}'}
+    payload = {'message': message}
+    response = requests.post(url, headers=headers, data=payload)
+    return response.status_code
 
+# IPアドレスを取得してLINE Notifyに送信
 @app.route('/')
 def index():
-    """
-    ユーザーがサイトにアクセスしたときにIPアドレスを取得し、Lineに通知するエンドポイント
-    """
-    # ユーザーのIPアドレスを取得
-    user_ip = request.remote_addr
-    # メッセージを作成
-    message = f"サイトにアクセスしたIPアドレス: {user_ip}"
-    # Line Notifyで送信
-    send_line_notify(message)
-    return 'IPアドレスが通知されました。'
+    # クライアントのIPアドレスを取得
+    ip_address = request.remote_addr
+    message = f"アクセスがありました。IPアドレス: {ip_address}"
+
+    # LINE Notifyで通知を送信
+    status_code = send_line_notify(message)
+
+    # 成功した場合
+    if status_code == 200:
+        return f"IPアドレス {ip_address} が通知されました。"
+    else:
+        return "通知の送信に失敗しました。"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)
